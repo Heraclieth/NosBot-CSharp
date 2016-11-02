@@ -11,7 +11,7 @@ namespace Nos_CSharp
     class map
     {
         const int PROCESS_WM_READ = 0x0010;
-        #region DLLImport
+        #region DLLs Import
         [DllImport("kernel32.dll")]
         public static extern int OpenProcess(uint dwDesiredAccess, bool bInheritHandle, int dwProcessId);
 
@@ -21,7 +21,7 @@ namespace Nos_CSharp
         [DllImport("kernel32.dll")]
         public static extern bool WriteProcessMemory(int hProcess, int lpBaseAddress, byte[] buffer, int size, int lpNumberOfBytesWritten);
         #endregion
-        static Process[] myProcess = Process.GetProcessesByName("nostalex.dat");
+        static Process[] p = Process.GetProcessesByName("nostalex.dat");
 
         uint DELETE = 0x00010000;
         uint READ_CONTROL = 0x00020000;
@@ -134,7 +134,7 @@ namespace Nos_CSharp
         public void chercheMapInfo()
         {
             uint PROCESS_ALL_ACCESS = (DELETE | READ_CONTROL | WRITE_DAC | WRITE_OWNER | SYNCHRONIZE | END);
-            int processHandle = OpenProcess(PROCESS_ALL_ACCESS, false, myProcess[0].Id);
+            int processHandle = OpenProcess(PROCESS_ALL_ACCESS, false, p[0].Id);
 
             var mapId_buffer = new byte[4];
             ReadProcessMemory(processHandle, 0x69278C, mapId_buffer, 4, 0);

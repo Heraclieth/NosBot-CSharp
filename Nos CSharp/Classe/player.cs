@@ -5,13 +5,14 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Nos_CSharp
 {
     class player
     {
         const int PROCESS_WM_READ = 0x0010;
-        #region DLLImport
+        #region DLLs Import
         [DllImport("kernel32.dll")]
         public static extern int OpenProcess(uint dwDesiredAccess, bool bInheritHandle, int dwProcessId);
 
@@ -21,7 +22,7 @@ namespace Nos_CSharp
         [DllImport("kernel32.dll")]
         public static extern bool WriteProcessMemory(int hProcess, int lpBaseAddress, byte[] buffer, int size, int lpNumberOfBytesWritten);
         #endregion
-        static Process[] myProcess = Process.GetProcessesByName("nostalex.dat");
+        static Process[] p = Process.GetProcessesByName("nostalex.dat");
 
         uint DELETE = 0x00010000;
         uint READ_CONTROL = 0x00020000;
@@ -39,6 +40,8 @@ namespace Nos_CSharp
         private uint MP;
         private uint MP_MAX;
 
+        private uint EXP;
+
         private uint GOLD;
 
         private uint PLAYER_LVL;
@@ -48,6 +51,7 @@ namespace Nos_CSharp
         private string PLAYER_TARGET_NAME;
 
         private uint POSITION;
+        private uint TARGET;
 
         #region GET /SET
         public string NICKNAME1
@@ -231,12 +235,38 @@ namespace Nos_CSharp
                 PLAYER_TARGET_NAME = value;
             }
         }
+
+        public uint EXP1
+        {
+            get
+            {
+                return EXP;
+            }
+
+            set
+            {
+                EXP = value;
+            }
+        }
+
+        public uint TARGET1
+        {
+            get
+            {
+                return TARGET;
+            }
+
+            set
+            {
+                TARGET = value;
+            }
+        }
         #endregion
 
         public void cherchePlayerInfo()
         {
             uint PROCESS_ALL_ACCESS = (DELETE | READ_CONTROL | WRITE_DAC | WRITE_OWNER | SYNCHRONIZE | END);
-            int processHandle = OpenProcess(PROCESS_ALL_ACCESS, false, myProcess[0].Id);
+            int processHandle = OpenProcess(PROCESS_ALL_ACCESS, false, p[0].Id);
 
             var hp_buffer = new byte[4];
             ReadProcessMemory(processHandle, 0x8200AC, hp_buffer, 4, 0);
@@ -310,9 +340,20 @@ namespace Nos_CSharp
 
             var pos_buffer = new byte[4];
             ReadProcessMemory(processHandle, 0x820058, pos_buffer, 4, 0);
-            ReadProcessMemory(processHandle, BitConverter.ToInt32(pos_buffer, 0) + 0x4, pos_buffer, 4, 0);
+            ReadProcessMemory(processHandle, BitConverter.ToInt32(pos_buffer, 0) + 0x04, pos_buffer, 4, 0);
             POSITION = (uint)BitConverter.ToInt32(pos_buffer, 0);
 
+            var exp_buffer = new byte[4];
+            ReadProcessMemory(processHandle, 0x820328, exp_buffer, 4, 0);
+            ReadProcessMemory(processHandle, BitConverter.ToInt32(exp_buffer, 0) + 0xAC, exp_buffer, 4, 0);
+            ReadProcessMemory(processHandle, BitConverter.ToInt32(exp_buffer, 0) + 0x68, exp_buffer, 4, 0);
+            ReadProcessMemory(processHandle, BitConverter.ToInt32(exp_buffer, 0) + 0x88, exp_buffer, 4, 0);
+            EXP = (uint)BitConverter.ToInt32(exp_buffer, 0);
+
+            var target_buffer = new byte[4];
+            ReadProcessMemory(processHandle, 0x8200B0, target_buffer, 4, 0);
+            ReadProcessMemory(processHandle, BitConverter.ToInt16(target_buffer, 0) + 0x60, target_buffer, 4, 0);
+            TARGET = (uint)BitConverter.ToInt32(target_buffer, 0);
         }
 
 

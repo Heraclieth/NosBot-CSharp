@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace Nos_CSharp
@@ -17,8 +18,17 @@ namespace Nos_CSharp
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
+            Process[] myProcess = Process.GetProcessesByName("nostalex.dat");
 
-            Application.Run(new Form1());
+            if (myProcess.Length != 0)
+            {
+                Application.Run(new Form1());
+            }
+            else
+            {
+                MessageBox.Show("Nostalex.dat not found !");
+            }
+
         }
     }
 }
