@@ -37,6 +37,7 @@ namespace Nos_CSharp
         private uint ITEM_AMOUNT;
         private string LIST_PLAYER;
         private string LIST_NPC;
+        private int LIST_PLAYER_O;
 
         #region get / set
         public uint MAP_ID1
@@ -129,6 +130,19 @@ namespace Nos_CSharp
                 LIST_NPC = value;
             }
         }
+
+        public int LIST_PLAYER_O1
+        {
+            get
+            {
+                return LIST_PLAYER_O;
+            }
+
+            set
+            {
+                LIST_PLAYER_O = value;
+            }
+        }
         #endregion
 
         public void chercheMapInfo()
@@ -164,9 +178,17 @@ namespace Nos_CSharp
             ReadProcessMemory(processHandle, BitConverter.ToInt32(aitem_buffer, 0) + 0x08, aitem_buffer, 4, 0);
             ITEM_AMOUNT = (uint)BitConverter.ToInt32(aitem_buffer, 0);
 
+            LIST_PLAYER_O = 0x00;
+            var lPlayers_buffer = new byte[15];
+            ReadProcessMemory(processHandle, 0x81FCEC, lPlayers_buffer, 15, 0);
+            ReadProcessMemory(processHandle, BitConverter.ToInt32(lPlayers_buffer, 0) + 0xC, lPlayers_buffer, 15, 0);
+            ReadProcessMemory(processHandle, BitConverter.ToInt32(lPlayers_buffer, 0) + 0x04, lPlayers_buffer, 15, 0);
+            ReadProcessMemory(processHandle, BitConverter.ToInt32(lPlayers_buffer, 0) + LIST_PLAYER_O, lPlayers_buffer, 15, 0);
+            ReadProcessMemory(processHandle, BitConverter.ToInt32(lPlayers_buffer, 0) + 0x1CC, lPlayers_buffer, 15, 0);
+            ReadProcessMemory(processHandle, BitConverter.ToInt32(lPlayers_buffer, 0) + 0x0, lPlayers_buffer, 15, 0);
+            LIST_PLAYER = Encoding.UTF8.GetString(lPlayers_buffer);
 
-
-
+            }
         }
     }
 }

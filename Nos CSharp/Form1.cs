@@ -43,6 +43,7 @@ namespace Nos_CSharp
             myPlayer.cherchePlayerInfo();
             myMap.chercheMapInfo();
 
+
             #region player infos
             l_nickname.Text = "Player: " + myPlayer.NICKNAME1;
 
