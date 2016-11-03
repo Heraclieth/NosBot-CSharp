@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Nos_CSharp
 {
-    class player
+    public class player
     {
-        const int PROCESS_WM_READ = 0x0010;
         #region DLLs Import
         [DllImport("kernel32.dll")]
         public static extern int OpenProcess(uint dwDesiredAccess, bool bInheritHandle, int dwProcessId);
@@ -22,14 +18,15 @@ namespace Nos_CSharp
         [DllImport("kernel32.dll")]
         public static extern bool WriteProcessMemory(int hProcess, int lpBaseAddress, byte[] buffer, int size, int lpNumberOfBytesWritten);
         #endregion
-        static Process[] p = Process.GetProcessesByName("nostalex.dat");
+        static Process[] p;
 
-        uint DELETE = 0x00010000;
-        uint READ_CONTROL = 0x00020000;
-        uint WRITE_DAC = 0x00040000;
-        uint WRITE_OWNER = 0x00080000;
-        uint SYNCHRONIZE = 0x00100000;
-        uint END = 0xFFF;
+        private int PROCESS_WM_READ;
+        private uint DELETE;
+        private uint READ_CONTROL;
+        private uint WRITE_DAC;
+        private uint WRITE_OWNER;
+        private uint SYNCHRONIZE;
+        private uint END;
 
 
         private string NICKNAME;
@@ -52,6 +49,7 @@ namespace Nos_CSharp
 
         private uint POSITION;
         private uint TARGET;
+        private bool TARGETTING;
 
         #region GET /SET
         public string NICKNAME1
@@ -261,7 +259,33 @@ namespace Nos_CSharp
                 TARGET = value;
             }
         }
+
+        public bool TARGETTING1
+        {
+            get
+            {
+                return TARGETTING;
+            }
+
+            set
+            {
+                TARGETTING = value;
+            }
+        }
         #endregion
+
+        public player()
+        {
+            PROCESS_WM_READ = 0x0010;
+            p = Process.GetProcessesByName("nostalex.dat");
+
+            DELETE = 0x00010000;
+            READ_CONTROL = 0x00020000;
+            WRITE_DAC = 0x00040000;
+            WRITE_OWNER = 0x00080000;
+            SYNCHRONIZE = 0x00100000;
+            END = 0xFFF;
+        }
 
         public void cherchePlayerInfo()
         {
@@ -354,6 +378,17 @@ namespace Nos_CSharp
             ReadProcessMemory(processHandle, 0x8200B0, target_buffer, 4, 0);
             ReadProcessMemory(processHandle, BitConverter.ToInt16(target_buffer, 0) + 0x60, target_buffer, 4, 0);
             TARGET = (uint)BitConverter.ToInt32(target_buffer, 0);
+
+            #region TARGETTING BOOL COND
+            if (TARGET != 0)
+            {
+                TARGETTING = true;
+            }
+            else
+            {
+                TARGETTING = false;
+            }
+            #endregion
         }
 
 

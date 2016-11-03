@@ -22,7 +22,7 @@ namespace Nos_CSharp
 
             if (myProcess.Length != 0)
             {
-                Application.Run(new Form1());
+               Application.Run(new Form1());
             }
             else
             {

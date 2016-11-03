@@ -16,7 +16,7 @@ namespace Nos_CSharp
         private player myPlayer;
         private map myMap;
 
-        public void form_pos()
+        public void x_y()
         {
             string postohex = string.Format("{0:X}", myPlayer.POSITION1);
             string x = postohex.Substring(4);
@@ -28,23 +28,27 @@ namespace Nos_CSharp
         public Form1()
         {
             InitializeComponent();
+            
 
             timer_refresh.Start();
             timer_refresh.Interval = 100;
 
             pb_exp.Minimum = 0;
-
+            
             this.myPlayer = new player();
             this.myMap = new map();
+
+            
         }
 
         private void timer_refresh_Tick(object sender, EventArgs e)
         {
-            myPlayer.cherchePlayerInfo();
-            myMap.chercheMapInfo();
-
+            
+            
 
             #region player infos
+            myPlayer.cherchePlayerInfo();
+
             l_nickname.Text = "Player: " + myPlayer.NICKNAME1;
 
             l_hp.Text = Convert.ToString(myPlayer.HP1) + " / " + Convert.ToString(myPlayer.HP_MAX1);
@@ -57,16 +61,32 @@ namespace Nos_CSharp
 
             l_lvl.Text = "Level: " + Convert.ToString(myPlayer.PLAYER_LVL1);
             l_jlvl.Text = "JLevel: " + Convert.ToString(myPlayer.PLAYER_JLVL1);
+
+
+
             #endregion
 
             #region map infos
+            myMap.chercheMapInfo();
+
             l_mapId.Text = "Map: " + Convert.ToString(myMap.MAP_ID1);
             l_aitem.Text = "Items: " + Convert.ToString(myMap.ITEM_AMOUNT1);
             l_amob.Text = "Mobs: " + Convert.ToString(myMap.MOB_AMOUNT1);
             l_anpc.Text = "NPCs: " + Convert.ToString(myMap.NPC_AMOUNT1);
             l_aplayer.Text = "Players: " + Convert.ToString(myMap.PLAYER_AMOUNT1);
-            form_pos();
+            x_y();
             #endregion
+        }
+
+        private void b_list_Click(object sender, EventArgs e)
+        {
+            liste myList = new liste(this ,myPlayer, myMap);
+            myList.ShowDialog();
+        }
+
+        private void l_target_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
